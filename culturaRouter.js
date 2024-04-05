@@ -91,7 +91,7 @@ app.post('/editar', urlencodedParser, (req, res) => {
     let id = req.body.id;
     let nome = req.body.nome;
     let tempo = req.body.tempo;
-    let doccultura = db.ref("cultura");
+    let doccultura = db.ref("cultura") ;
     doccultura.child(id).update(
         {
             'nome': nome,
