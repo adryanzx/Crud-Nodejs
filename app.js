@@ -12,7 +12,7 @@ app.listen(port, () => {
 
 // Rota da página de formulário de login
 app.get('/', (req, res) => {
-    fs.readFile('src/login.html', (e, dados) => {
+    fs.readFile('src/login.html', (e, dados) =>  {
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(dados);
         res.end();
