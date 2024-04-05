@@ -4,14 +4,7 @@ const urlencodedParser = bodyParser.urlencoded({extended: true});
 const express = require('express');
 const app = express();
 
-var admin = require("firebase-admin");
-var serviceAccount = require("./serviceAccountKey.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://aplica-3d25b-default-rtdb.firebaseio.com"
-});
-
+const admin = require('./firebase');
 const db = admin.database();
 
 // Rota da página que exibe os livros registrados no banco de dados
