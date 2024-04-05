@@ -4,7 +4,7 @@ const urlencodedParser = bodyParser.urlencoded({extended: true});
 const express = require('express');
 const app = express();
 
-const admin = require('./firebase');
+const admin = require('./firebase') ;
 const db = admin.database();
 
 // Rota da página que exibe os livros registrados no banco de dados
