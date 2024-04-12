@@ -7,6 +7,40 @@ const app = express();
 const admin = require('./firebase')  ;
 const db = admin.database();
 
+function criarTabela(dados) {
+    let tabela = `<table class="table table-striped zebrado">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome da propriedade</th>
+                            <th>longitude</th>
+                            <th>latitude</th>
+                            <th>cidade</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+    for (let chave in dados) {
+        tabela += `<tr>
+                        <td>${chave}</td>
+                        <td>${dados[chave].nome}</td>
+                        <td>${dados[chave].longitude}</td>
+                        <td>${dados[chave].latitude}</td>
+                        <td>${dados[chave].cidade}</td>
+                        <td>
+                            <a class="btn btn-outline-warning" href="/propriedade/editar/${chave}">Alterar</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-outline-danger" href="/propriedade/excluir/${chave}">Excluir</a>
+                        </td>
+                    </tr>`;
+    }            
+    tabela += `</tbody >
+            </table > `;
+    return tabela;
+}
+
 app.get('/', (req, res) => {
     fs.readFile('src/cabecalho.html', (e, cabecalho) => {
         fs.readFile('src/rodape.html', (e, rodape) => {
@@ -116,7 +150,7 @@ app.get('/excluir/:id', (req, res) => {
         fs.readFile('src/rodape.html', (e, rodape) => {
             fs.readFile('src/propriedade/excluir_propriedade.html', (e, dados) => {
                 let id = req.params.id;
-                const docLivro = db.ref("propriedade/"+id);
+                const docPropriedade = db.ref("propriedade/"+id);
                 docPropriedade.once("value", function(snapshot){
                     let nome = snapshot.val().nome;
                     let longitude = snapshot.val().longitude;
@@ -138,43 +172,11 @@ app.get('/excluir/:id', (req, res) => {
 
 app.post('/excluir', urlencodedParser, (req, res) => {
     let id = req.body.id;
-    const docPropriedade = db.ref("propriedade/"+id);
+    const docPropriedade = db.ref("propriedade/" + id);
     docPropriedade.remove();
     res.redirect("/propriedade");
 });
 
-function criarTabela(dados) {
-    let tabela = `<table class="table table-striped zebrado">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nome da propriedade</th>
-                            <th>longitude</th>
-                            <th>latitude</th>
-                            <th>cidade</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
-    for (let chave in dados) {
-        tabela += `<tr>
-                        <td>${chave}</td>
-                        <td>${dados[chave].nome}</td>
-                        <td>${dados[chave].longitude}</td>
-                        <td>${dados[chave].latitude}</td>
-                        <td>${dados[chave].cidade}</td>
-                        <td>
-                            <a class="btn btn-outline-warning" href="/propriedade/editar/${chave}">Alterar</a>
-                        </td>
-                        <td>
-                            <a class="btn btn-outline-danger" href="/propriedade/excluir/${chave}">Excluir</a>
-                        </td>
-                    </tr>`;
-    }            
-    tabela += `</tbody >
-            </table > `;
-    return tabela;
-}
+
 
 module.exports = app;

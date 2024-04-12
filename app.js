@@ -7,7 +7,7 @@ const port = 3000;
 
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
-    console.log('Servidor iniciado!');
+    console.log('Servidor foi inicado na porta 3000');
 });
 
 // Rota da página de formulário de login
