@@ -1,23 +1,23 @@
 
 <h3>Excluir talhões</h3>
 
-<form action="/talhoes/editar" method="post">
-    <input type="hidden" class="form-control" id="id" name="id" placeholder="ID" >
+<form action="/talhoes/excluir" method="post">
+    <input type="hidden" class="form-control" id="id" name="id" placeholder="ID" value="{id}">
     <div class="mb-3">
         <label for="nome" class="form-label">Nome do talhão</label>
-        <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome do talhão">
+        <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome do talhão" value="{nome}">
     </div>
     <div class="mb-3">
         <label for="longitude" class="form-label">longitude</label>
-        <input type="text" class="form-control" id="longitude" name="longitude" placeholder="longitude">
+        <input type="text" class="form-control" id="longitude" name="longitude" placeholder="longitude" value="{longitude}">
     </div>
     <div class="mb-3">
         <label for="latitude" class="form-label">latitude</label>
-        <input type="text" class="form-control" id="latitude" name="latitude" placeholder="latitude">
+        <input type="text" class="form-control" id="latitude" name="latitude" placeholder="latitude" value="{latitude}">
     </div>
     <div class="mb-3">
         <label for="area" class="form-label">area</label>
-        <input type="text" class="form-control" id="area" name="area" placeholder="area">
+        <input type="text" class="form-control" id="area" name="area" placeholder="area" value="{area}">
     </div>
     <button type="submit" class="btn btn-danger">Excluir</button>
 </form>
