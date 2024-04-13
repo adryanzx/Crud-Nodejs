@@ -1,14 +1,14 @@
 
 <h3>Editar Produto</h3>
 <form action="/produto/editar" method="post">
-    <input type="hidden" class="form-control" id="id" name="id" placeholder="ID" >
+    <input type="hidden" class="form-control" id="id" name="id" placeholder="ID" value="{id}">
     <div class="mb-3">
         <label for="nome" class="form-label">Nome do produto</label>
-        <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome do produto">
+        <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome do produto" value="{nome}">
     </div>
     <div class="mb-3">
         <label for="descricao" class="form-label">Descrição</label>
-        <input type="text" class="form-control" id="descricao" name="descricao" placeholder="descricao">
+        <input type="text" class="form-control" id="descricao" name="descricao" placeholder="descricao" value="{descricao}">
     </div>
     
     <button type="submit" class="btn btn-warning">Alterar</button>

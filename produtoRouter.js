@@ -1,6 +1,6 @@
 const fs = require('fs');
-const bodyParser = require('body-parser' ) ;
-const urlencodedParser = bodyParser.urlencoded({extended: true});
+const bodyParser = require('body-parser');
+const urlencodedParser = bodyParser.urlencoded({ extended: true });
 const express = require('express');
 const app = express();
 
@@ -60,8 +60,8 @@ app.get('/', (req, res) => {
 app.get('/novo', (req, res) => {
     fs.readFile('src/cabecalho.html', (e, cabecalho) => {
         fs.readFile('src/rodape.html', (e, rodape) => {
-            fs.readFile('src/Produto/novo_produto.html', (e, dados) => {
-                res.writeHead(200, {'Content-Type': 'text/html'});
+            fs.readFile('src/produto/novo_produto.html', (e, dados) => {
+                res.writeHead(200, { 'Content-Type': 'text/html' });
                 res.write(cabecalho + dados + rodape);
                 res.end();
             });
@@ -71,28 +71,17 @@ app.get('/novo', (req, res) => {
 
 
 app.post('/novo', urlencodedParser, (req, res) => {
-    fs.readFile('src/cabecalho.html', (e, cabecalho) => {
-        fs.readFile('src/rodape.html', (e, rodape) => {
-            fs.readFile('src/Produto/produto.html', (e, dados) => {
-                let mensagem = "";
-                try{
-                    const docProduto = db.ref("produto").push();
-                    const produto = {
-                        nome: req.body.nome,
-                        descricao: req.body.descricao
-                    };
-                    docProduto.set(produto);
-                    mensagem = "Produto inserido com sucesso!";
-                }catch(e){
-                    mensagem = "Erro ao inserir o produto!";
-                }
-                dados = dados.toString().replace("{mensagem}", mensagem);
-                res.writeHead(200, {'Content-Type': 'text/html'});
-                res.write(cabecalho + dados + rodape);
-                res.end();
-            });
-        });
-    });
+    try {
+        const docproduto = db.ref("produto").push();
+        const produto = {
+            nome: req.body.nome,
+            descricao: req.body.descricao
+        };
+        docproduto.set(produto);
+        mensagem = "Produto inserido com sucesso!";
+    } catch (e) {
+        mensagem = "Erro ao inserir o produto!";
+    }
 });
 
 
@@ -101,18 +90,19 @@ app.get('/editar/:id', (req, res) => {
         fs.readFile('src/rodape.html', (e, rodape) => {
             fs.readFile('src/produto/editar_produto.html', (e, dados) => {
                 let id = req.params.id;
-                const docproduto = db.ref("produto/"+id)
+                const docproduto = db.ref("produto/" + id)
                 docproduto.once("value", function (snapshot) {
                     let nome = snapshot.val().nome;
                     let descricao = snapshot.val().descricao;
 
                     dados = dados.toString().replace("{nome}", nome);
                     dados = dados.toString().replace("{descricao}", descricao);
+                    dados = dados.toString().replace("{id}", id);
                     res.writeHead(200, { 'Content-Type': 'text/html' });
                     res.write(cabecalho + dados + rodape);
                     res.end();
                 })
-              
+
             });
         });
     });
@@ -140,7 +130,7 @@ app.get('/excluir/:id', (req, res) => {
         fs.readFile('src/rodape.html', (e, rodape) => {
             fs.readFile('src/produto/excluir_produto.html', (e, dados) => {
                 let id = req.params.id;
-                const docproduto = db.ref("produto/"+id)
+                const docproduto = db.ref("produto/" + id)
                 docproduto.once("value", function (snapshot) {
                     let nome = snapshot.val().nome;
                     let descricao = snapshot.val().descricao;
@@ -160,9 +150,9 @@ app.get('/excluir/:id', (req, res) => {
 // Rota da página para excluir um registro de um livro
 app.post('/excluir', urlencodedParser, (req, res) => {
     let id = req.body.id;
-    const docagricultor = db.ref("agricultor/" + id);
-    docagricultor.remove();
-    res.redirect("/agricultor");
+    const docproduto = db.ref("produto/" + id);
+    docproduto.remove();
+    res.redirect("/produto");
 });
 
 module.exports = app;
