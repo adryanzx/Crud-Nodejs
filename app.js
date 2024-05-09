@@ -4,7 +4,7 @@ const urlencodedParser = bodyParser.urlencoded({extended: true});
 const express = require('express');
 const session = require('express-session');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 5000;
 
 app.use(session({
     'secret' : 'fhnoaa23423x432c4cx2c3',
@@ -25,9 +25,7 @@ async function verificarToken(token){
 }
 
 // Inicia o servidor na porta especificada
-app.listen(port, () => {
-    console.log('Servidor foi inicado na porta 3000');
-});
+app.listen(port, () => console.log(`Server iniciado na porta ${port}`));
 
 // Rota da página de formulário de login
 app.get('/', (req, res) => {
