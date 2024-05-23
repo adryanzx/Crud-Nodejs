@@ -1,8 +1,9 @@
-const admin = require ('firebase-admin') ;
-
+var admin = require("firebase-admin");
+var serviceAccount = require("./serviceAccountKey.json");
+ 
 admin.initializeApp({
-    credential: admin.credential.cert('./serviceAccountKey.json'),
-    databaseURL: "https://appnodejs-8f9ba-default-rtdb.firebaseio.com/"
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://projetocrud-469bd-default-rtdb.firebaseio.com"
 });
 
 module.exports = admin;

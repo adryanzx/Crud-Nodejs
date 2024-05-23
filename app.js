@@ -7,20 +7,24 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(session({
-    'secret' : 'fhnoaa23423x432c4cx2c3',
+    'secret' : 'adosaipoda9989ahu8uijjsd',
     'resave' : false,
     'saveUninitialized' : true,
-    'cookie' : {secure: false}
+    'cookie': {secure: false}
 }));
 
+const admin = require("./firebase");
+const db = admin.database();
+
 async function verificarToken(token){
-    let status
-    await admin.auth((decodedToken) => {
-        status = true;
-    })
-    .catch((error) => {
-        status = false;
-    });
+    let status;
+    await admin.auth().verifyIdToken(token)
+        .then((decodedToken) => {
+            status = true;
+        })
+        .catch((error) => {
+            status = false;
+        });
     return status;
 }
 
