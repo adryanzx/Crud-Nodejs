@@ -23,6 +23,9 @@
                 <label for="senha" class="form-label">Senha</label>
                 <input type="password" class="form-control" id="senha" name="senha" placeholder="Digite sua senha">
               </div>
+              <div class="mb-3">
+                <p>Ainda não tem conta? Clique <a href="/cadastrar"> aqui </a> para se cadastrar!</p>
+              </div>
               <button type="submit" class="btn btn-primary">Acessar</button>
             </form>
           </div>
@@ -33,5 +36,40 @@
   <!-- Bootstrap Bundle com Popper -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+  <script>
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAdHxhbqbeI0rtMUew_8PCAY2CeOCVdlmg",
+      authDomain: "projetocrud-469bd.firebaseapp.com",
+      databaseURL: "https://projetocrud-469bd-default-rtdb.firebaseio.com",
+      projectId: "projetocrud-469bd",
+      storageBucket: "projetocrud-469bd.appspot.com",
+      messagingSenderId: "561968454786",
+      appId: "1:561968454786:web:a980f547d06d767491289b"
+
+    };
+
+    // Initialize Firebase
+
+   firebase.initializeApp(firebaseConfig);
+
+    function acessar(){
+      let email = document.getElementById("email").value;
+      let senha = document.getElementById("senha").value;
+
+      firebase.auth().signInWithEmailAndPassword(email, senha)
+        .then((userCredential) => {
+          userCredential.user.getIdToken().then((token) => {
+            window.location.href = "/acessar?token="+token;
+          });
+        })
+        .catch((error) => {
+          alert("Nome de usuário e/ou senha inválidos!:" + error);
+        });
+    }
+
+  </script>
+
 </body>
 </html>
