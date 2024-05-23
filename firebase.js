@@ -6,4 +6,4 @@ admin.initializeApp({
   databaseURL: "https://projetocrud-469bd-default-rtdb.firebaseio.com"
 });
 
-module.exports = admin;
+module.exports =  admin;
