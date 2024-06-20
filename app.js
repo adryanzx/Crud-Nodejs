@@ -102,6 +102,9 @@ app.use("/cultura", culturaRouter);
 const talhoesRouter = require("./talhoesRouter");
 app.use("/talhoes", talhoesRouter);
 
+const safraRouter = require("./safraRouter");
+app.use("/safra", safraRouter);
+
 
 
 

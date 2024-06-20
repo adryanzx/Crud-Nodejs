@@ -1,0 +1,195 @@
+<h3>Safra</h3>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" 
+    data-bs-target="#safraModal">
+    Nova Safra
+</button>
+
+<!-- Modal -->
+<div class="modal modal-lg fade" id="safraModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Nova safra</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col">
+                <label for="data" class="form-label">Data Inicial:</label>
+                <input type="date" class="form-control" id="dataini" name="dataini">
+            </div>
+            <div class="col">
+              <label for="data" class="form-label">Data FInal:</label>
+              <input type="date" class="form-control" id="datafim" name="datafim">
+          </div>
+            
+            <div class="col-2 d-flex align-items-end">
+                <button type="button" class="btn btn-success" id="btnNovacultura">
+                    Salvar
+                </button>
+            </div>
+          </div>
+          <div class="row border-top border-bottom mt-3 mb-3 pt-3 pb-3 d-none" id="item-cultura">
+            <input type="hidden" id="idsafra"/>
+            <div class="col">
+                <label for="cultura" class="form-label"> Selecione a cultura:</label>
+                <select class="form-select" id="cultura">
+                    <option value="" disabled selected>Selecione uma cultura:</option>
+                </select>
+            </div>
+            <div class="col">
+                <label for="valor" class="form-label">tempo de cultura:</label>
+                <input type="text" class="form-control" id="tempo">
+            </div>
+           
+            <div class="col-1 d-flex align-items-end">
+                <button type="button" class="btn btn-warning" id="btnAddcultura">+</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <table class="table table-hover table-striped">
+                <tbody id="tabela-corpo">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button type="button" class="btn btn-primary" id="btnFechar">Fechar Cultura</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastNovacultura" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto">Resposta</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        Cultura registrada com sucesso!
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const toastTrigger = document.getElementById('btnNovacultura')
+    const toastLiveExample = document.getElementById('toastNovacultura')
+    if (toastTrigger) {
+        toastTrigger.addEventListener('click', () => {
+            let dataini = document.getElementById("dataini").value;
+            let datafim = document.getElementById("datafim").value;
+            let url = `/safra/novo?dataini=${encodeURIComponent(dataini)}&datafim=${encodeURIComponent(datafim)}`;
+            fetch(url)
+                .then(function(response){
+                    return response.json();
+                }).then(function(data){
+                    const toast = new bootstrap.Toast(toastLiveExample)
+                    let elemento = document.getElementById("item-cultura");
+                    elemento.classList.remove("d-none");
+                    toast.show();
+                    document.getElementById("idsafra").value = data.id;
+                });
+        })
+    }
+
+    fetch('/safra/cultura')
+        .then(function(response){
+            return response.json();
+        })
+        .then(function(data){
+            let listacultura = document.getElementById("cultura");
+            Object.keys(data).forEach(function(key){ 
+                let option = document.createElement('option');
+                option.value = key;
+                option.textContent = data[key].nome; 
+                listacultura.appendChild(option);
+            });
+        });
+
+    const listacultura = document.getElementById("cultura");
+    listacultura.addEventListener('change', function(){
+      const id = listacultura.value;
+      fetch("/safra/cultura/"+id)
+        .then(function(response){
+          return response.json();
+        })
+        .then(function(data){
+          document.getElementById('tempo').value = data.tempo;
+        })
+        .catch(function(err){
+          console.error("Erro:", err);
+        });
+    });
+
+    const btnAddcultura = document.getElementById("btnAddcultura");
+    btnAddcultura.addEventListener("click", function(){
+      const safraId = document.getElementById("idsafra").value;
+      const culturaId = document.getElementById("cultura").value;
+      const culturaNome = document.querySelector(`#cultura option[value="${culturaId}"]`).textContent;
+      const culturaTempo = document.getElementById("tempo").value;
+      const url =
+         `/safra/adicionarcultura/${safraId}/${culturaId}/${culturaNome}/${culturaTempo}`;
+      fetch(url)
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          if(data.sucesso){
+            console.log("cultura inserida com sucesso!");
+            const tabela = document.getElementById("tabela-corpo");
+            const linha = document.createElement('tr');
+            linha.setAttribute('data-cultura-id', culturaId);
+            linha.innerHTML = `
+              <td>${culturaNome}</td>
+              <td>${culturaTempo}</td>
+              
+              <td><button class="btn btn-danger btnExcluir">-</button></td>
+            `;
+            tabela.appendChild(linha);
+          } else {
+            console.log("Erro ao inserir a cultura!");
+          }
+        })
+    });
+
+    document.getElementById('tabela-corpo')
+            .addEventListener('click', (e) => {
+              if (e.target.classList.contains('btnExcluir')){
+                const linha = e.target.closest('tr');
+                const culturaId = linha.getAttribute('data-cultura-id');
+                const safraId = document.getElementById('idsafra').value;
+                const url = "/safra/excluircultura/"+safraId+"/"+culturaId;
+                fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                  if(data.sucesso){
+                    console.log("cultura excluído!");
+                    linha.remove();
+                  } else {
+                    console.error("Não foi possível excluir a cultura!");
+                  }
+                })
+                .catch(err => console.error("Erro: "+err));
+              }
+            } );
+
+    document.getElementById('btnFechar').addEventListener('click', (e)=> {
+      const safraId = document.getElementById('idsafra').value;
+      const url = "/safra/fechar/"+safraId;
+      fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (data.sucesso){
+          console.log("safra fechada com sucesso!");
+        } else {
+          console.err("Erro ao fechar safra!");
+        }
+      })
+      .catch(err => console.err("Erro: "+err));
+    });
+
+  </script>
